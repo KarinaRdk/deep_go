@@ -15,11 +15,13 @@ type Number interface {
 
 func ToLittleEndian[T Number](number T) T {
 	n := int(unsafe.Sizeof(number))
-	lastIndex := n - 1
+	j := n - 1
 	p := unsafe.Pointer(&number)
 	for i := 0; i < n/2; i++ {
-		*(*int8)(unsafe.Add(p, i)), *(*int8)(unsafe.Add(p, lastIndex)) = *(*int8)(unsafe.Add(p, lastIndex)), *(*int8)(unsafe.Add(p, i))
-		lastIndex--
+		left := (*int8)(unsafe.Add(p, i))
+		right := (*int8)(unsafe.Add(p, j))
+		*left, *right = *right, *left
+		j--
 	}
 	return number
 }
